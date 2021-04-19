@@ -1,24 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fstream>
 
 #include "fasttext/fasttext.h"
+#include "nlohmann/json.hpp"
 
 #include "tgcat.h"
 #include "utils.h"
 #include "lang_detect.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 map<string, double> settings;
 fasttext::FastText langFastText;
 
 int tgcat_init()
 {
-    settings["unicode_threshold"] = 0.1;
-    settings["fasttext_threshold"] = 0.1;
-    settings["en_compare_threshold"] = 0.7;
-    settings["en_compare_ratio"] = 15.0;
+    ifstream i("resources/settings.json");
+    json j;
+    i >> j;
+
+    for(const auto & [key, val] : j.items())
+    {
+        settings[key] = val;
+    }
 
     langFastText.loadModel("resources/lid.176.bin");
     return 0;
@@ -29,7 +36,6 @@ int tgcat_detect_language(const struct TelegramChannelInfo *channel_info, char l
     setlocale(LC_ALL, "");
 
     TelegramChannel telegramChannel(channel_info);
-
     pair<string, double> lang_score = detect_language(langFastText, settings, telegramChannel.full_text);
     memcpy(language_code, lang_score.first.c_str(), lang_score.first.size() + 1);
     return 0;

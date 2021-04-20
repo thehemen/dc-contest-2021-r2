@@ -27,3 +27,8 @@ _deps
 
 # Tester Executable
 tgcat-tester
+
+# Python (Byte-compiled / optimized / DLL files)
+__pycache__/
+*.py[cod]
+*$py.class

@@ -45,11 +45,7 @@ struct TelegramChannel
         for (size_t i = 0, recent_post_count = channel_info->recent_post_count; i < recent_post_count; i++)
         {
             TelegramChannelPost post = channel_info->recent_posts[i];
-
-            if(post.type == TelegramChannelPostType::TELEGRAM_CHANNEL_POST_TYPE_TEXT)
-            {
-                this->posts.push_back(char_to_wstring(post.text));
-            }
+            this->posts.push_back(char_to_wstring(post.text));
         }
 
         this->full_text = get_full_text(this->title, this->description, this->posts);

@@ -80,6 +80,9 @@ if __name__ == '__main__':
         F1_scores.append(F1)
 
         print(f'\n{language}')
+        print(f'True Positive: {TP}')
+        print(f'False Positive: {FP}')
+        print(f'False Negative: {FN}')
         print(f'Precision: {precision:.3f}')
         print(f'Recall: {recall:.3f}')
         print(f'F1: {F1:.3f}')

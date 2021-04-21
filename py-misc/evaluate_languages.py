@@ -6,8 +6,12 @@ from result_record import ResultRecord
 
 input_path = '../../inputs/dc0415-input/original/dc0415-input-all.txt'
 output_path = '../../outputs/out.txt'
+log_path = '../../outputs/log.txt'
+
 lang_path = '../../inputs/dc0415-input/original/dc0415-input-{}.txt'
 languages = ['ar', 'en', 'fa', 'ru', 'uz']
+
+EPS = 1e-9
 
 if __name__ == '__main__':
     records = []
@@ -62,17 +66,25 @@ if __name__ == '__main__':
             if lang_code_predicted in languages:
                 lang_stats[lang_code_predicted]['FP'] += 1
 
+    F1_scores = []
+
     for language in lang_stats.keys():
         lang_stats_now = lang_stats[language]
         FP = lang_stats_now['FP']
         FN = lang_stats_now['FN']
         TP = lang_stats_now['TP']
 
-        precision = TP / (TP + FP)
-        recall = TP / (TP + FN)
-        F1 = 2 * precision * recall / (precision + recall)
+        precision = TP / (TP + FP + EPS)
+        recall = TP / (TP + FN + EPS)
+        F1 = 2 * precision * recall / (precision + recall + EPS)
+        F1_scores.append(F1)
 
         print(f'\n{language}')
         print(f'Precision: {precision:.3f}')
         print(f'Recall: {recall:.3f}')
         print(f'F1: {F1:.3f}')
+
+    with open(log_path, 'a') as f:
+        for F1 in F1_scores:
+            f.write(f'{F1:.3f}\t'.replace('.', ','))
+        f.write(f'\n')

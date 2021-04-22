@@ -1,26 +1,44 @@
 import tqdm
 import pprint
+import argparse
 
 from data_record import DataRecord
 from result_record import ResultRecord
 
-input_path = '../../inputs/dc0415-input/original/dc0415-input-all.txt'
-output_path = '../../outputs/out.txt'
-log_path = '../../outputs/log.txt'
-
-lang_path = '../../inputs/dc0415-input/original/dc0415-input-{}.txt'
+input_path = '../../inputs/{}/original/dc0415-input-{}.txt'
+lang_path = '../../inputs/{}/original/dc0415-input-{}.txt'
+output_path = '../../outputs/out_{}.txt'
 languages = ['ar', 'en', 'fa', 'ru', 'uz']
+
+log_path = '../../outputs/log.txt'
 
 EPS = 1e-9
 
 if __name__ == '__main__':
-    records = []
-    results = []
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", help='The name of dataset.', default='dc0415-input')
+    parser.add_argument("--language", help='The type of language (ar, en, fa, ru, uz, all).', default='all')
+    args = parser.parse_args()
+
+    arg_dataset = args.dataset
+    arg_language = args.language
+
+    input_path_now = input_path.format(arg_dataset, arg_language)
+    output_path_now = output_path.format(arg_language)
+
+    if arg_language in languages:
+        languages = [arg_language]
+
+    print(input_path_now)
+    print(output_path_now)
+    print(languages)
+
+    records, results = [], []
 
     records_id_by_hash = {}
     pp = pprint.PrettyPrinter(indent=4)
 
-    with open(input_path, 'r') as f:
+    with open(input_path_now, 'r') as f:
         lines = f.readlines()
 
         for i in tqdm.tqdm(range(len(lines))):
@@ -31,7 +49,7 @@ if __name__ == '__main__':
 
     for i in tqdm.tqdm(range(len(languages))):
         lang_code = languages[i]
-        lang_path_now = lang_path.format(lang_code)
+        lang_path_now = lang_path.format(arg_dataset, lang_code)
 
         with open(lang_path_now, 'r') as f:
             lines = f.readlines()
@@ -43,7 +61,7 @@ if __name__ == '__main__':
                 if hash_value in records_id_by_hash.keys():
                     records[records_id_by_hash[hash_value]].lang_code = lang_code
 
-    with open(output_path, 'r') as f:
+    with open(output_path_now, 'r') as f:
         lines = f.readlines()
 
         for line in lines:

@@ -2,7 +2,7 @@ import csv
 import numpy as np
 import argparse
 
-seed_value = 69
+seed_value = 35
 input_path = '../../inputs-outputs/{}-{}-{}.tsv'
 
 def read_tsv(path):
@@ -22,9 +22,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", help='The name of the first dataset.', default='dc0415-dc0421-input')
     parser.add_argument("--language", help='The type of language (ar, en, fa, ru, uz).', default='en')
-    parser.add_argument("--length", help='The number of rows to be extracted', type=int, default=25)
+    parser.add_argument("--length", help='The number of rows to be extracted', type=int, default=30)
     parser.add_argument("--prefix_input", help='The prefix of input file.', default='2k')
-    parser.add_argument("--prefix_output", help='The prefix of output file.', default='25')
+    parser.add_argument("--prefix_output", help='The prefix of output file.', default='30')
     args = parser.parse_args()
 
     input_path_now = input_path.format(args.dataset, args.language, args.prefix_input)

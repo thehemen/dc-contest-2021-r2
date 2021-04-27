@@ -4,7 +4,7 @@ import numpy as np
 input_path = '../../inputs/{}/original/{}-{}.txt'
 output_path = '../../inputs-outputs/{}-{}-{}.txt'
 
-seed_value = 42
+seed_value = 24
 
 if __name__ == '__main__':
     np.random.seed(seed_value)

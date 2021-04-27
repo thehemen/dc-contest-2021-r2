@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument("--prefix", help='The prefix of output file.', default='1k')
     parser.add_argument("--max_recent_posts", type=int, help='The maximum number of recent posts.', default=3)
     parser.add_argument("--max_text_length", type=int, help='The maximum text length.', default=2000)
-    parser.add_argument("--max_row_count", type=int, help='The maximum text row count.', default=25)
+    parser.add_argument("--max_row_count", type=int, help='The maximum text row count.', default=30)
     args = parser.parse_args()
 
     input_path_now = input_path.format(args.dataset, args.language, args.prefix)

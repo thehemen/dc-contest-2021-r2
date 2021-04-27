@@ -5,8 +5,7 @@ import argparse
 from data_record import DataRecord
 from result_record import ResultRecord
 
-input_path = '../../inputs/{}/original/dc0415-input-{}.txt'
-lang_path = '../../inputs/{}/original/dc0415-input-{}.txt'
+input_path = '../../inputs/{}/original/{}-{}.txt'
 output_path = '../../outputs/out_{}.txt'
 languages = ['ar', 'en', 'fa', 'ru', 'uz']
 
@@ -23,7 +22,7 @@ if __name__ == '__main__':
     arg_dataset = args.dataset
     arg_language = args.language
 
-    input_path_now = input_path.format(arg_dataset, arg_language)
+    input_path_now = input_path.format(arg_dataset, arg_dataset, arg_language)
     output_path_now = output_path.format(arg_language)
 
     if arg_language in languages:
@@ -49,7 +48,7 @@ if __name__ == '__main__':
 
     for i in tqdm.tqdm(range(len(languages))):
         lang_code = languages[i]
-        lang_path_now = lang_path.format(arg_dataset, lang_code)
+        lang_path_now = input_path.format(arg_dataset, arg_dataset, lang_code)
 
         with open(lang_path_now, 'r') as f:
             lines = f.readlines()

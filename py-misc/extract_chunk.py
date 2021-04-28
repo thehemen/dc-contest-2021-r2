@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 
 input_path = '../../inputs/{}/original/{}-{}.txt'
-output_path = '../../inputs-outputs/{}-{}-{}.txt'
+output_path = '../../preprocessed/{}-{}-{}.txt'
 
 seed_value = 24
 

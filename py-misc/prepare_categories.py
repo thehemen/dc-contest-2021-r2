@@ -8,6 +8,15 @@ from PySide6.QtCore import Qt as qt
 
 from data_record import DataRecord
 
+def fix_by_newline(s, threshold=110):
+    s_new = ''
+
+    for line in s.split('\n'):
+        for i in range(len(line) // threshold + 1):
+            s_new += line[i * threshold: (i + 1) * threshold] + '\n'
+
+    return s_new
+
 class TgChannelManager:
     def __init__(self, start_index, category_dict, tg_channels, log_name):
         self.__category_dict = category_dict
@@ -30,6 +39,15 @@ class TgChannelManager:
                 self.__loaded_indices.add(idx)
 
     def forward(self, category_index):
+        if not self.__is_main_category_used:
+            meta_category_name = list(self.__category_dict.keys())[self.__category_indices[0]]
+
+            if category_index >= len(self.__category_dict[meta_category_name]):
+                return False
+
+        elif category_index >= len(self.__category_dict):
+            return False
+
         self.__category_indices.append(category_index)
 
         if not self.__is_main_category_used:
@@ -151,13 +169,14 @@ class MyWidget(QtWidgets.QWidget):
 
         if keyPressed in self.digit_keys:
             keyIndex = self.digit_keys.index(keyPressed)
-            self.tgChannelManager.forward(keyIndex)
+            status = self.tgChannelManager.forward(keyIndex)
 
-            if not self.tgChannelManager.is_main_category_used():
-                self.rightStackedLayout.setCurrentIndex(keyIndex + 1)
-            else:
-                self.rightStackedLayout.setCurrentIndex(0)
-                self.update_channel()
+            if status:
+                if not self.tgChannelManager.is_main_category_used():
+                    self.rightStackedLayout.setCurrentIndex(keyIndex + 1)
+                else:
+                    self.rightStackedLayout.setCurrentIndex(0)
+                    self.update_channel()
 
         elif keyPressed == qt.Key_Backspace:
             self.tgChannelManager.back()
@@ -198,11 +217,12 @@ class MyWidget(QtWidgets.QWidget):
 
         channel = self.tgChannelManager.get_channel()
         self.channelTitle.setText(channel.title)
-        self.channelDescription.setText(channel.description)
+        self.channelDescription.setText(fix_by_newline(channel.description))
         self.channelRecentPosts.clear()
 
         for i in range(len(channel.recent_posts)):
-            self.channelRecentPosts.addItem(QtWidgets.QListWidgetItem(channel.recent_posts[i]))
+            recentPost = fix_by_newline(channel.recent_posts[i])
+            self.channelRecentPosts.addItem(QtWidgets.QListWidgetItem(recentPost))
 
 if __name__ == '__main__':
     with open('categories.json', 'r') as f:
@@ -210,8 +230,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--start_index', type=int, default=0)
-    parser.add_argument('--dataset_name', default='../../preprocessed/dc0415-input-en-1k.txt')
-    parser.add_argument('--out_log_name', default='../../outputs/dc0415-en-1k-ground-truth.txt')
+    parser.add_argument('--dataset_name', default='../../preprocessed/dc0415-input-ru-1k.txt')
+    parser.add_argument('--out_log_name', default='../../outputs/dc0415-ru-1k-ground-truth.txt')
     args = parser.parse_args()
 
     pp = pprint.PrettyPrinter(indent=4)

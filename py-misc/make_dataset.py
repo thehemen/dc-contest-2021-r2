@@ -1,6 +1,8 @@
 import re
+import json
 import pprint
 import argparse
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 from data_record import DataRecord
@@ -20,7 +22,17 @@ def save_dataset(path, X, y):
 
     print(f'Saved {len(X)} samples to {path}')
 
+def label_to_fasttext(label):
+    return '__label__' + label.replace(' ', '_')
+
+def label_from_fasttext(label):
+    return label[9:].replace('_', ' ')
+
+
 if __name__ == '__main__':
+    with open('categories.json', 'r') as f:
+        category_dict = json.load(f)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--language', default='en')
     parser.add_argument('--dataset_name', default='../../preprocessed/dc0415-input-en-2k.txt')
@@ -52,7 +64,7 @@ if __name__ == '__main__':
 
         text = clean_text(str(record), args.language)
         category = category_by_idx[idx]
-        category_fasttext = '__label__' + category.replace(' ', '_')
+        category_fasttext = label_to_fasttext(category)
         X.append(text)
         y.append(category_fasttext)
 
@@ -61,3 +73,28 @@ if __name__ == '__main__':
 
     save_dataset(args.out_label_name.format(args.language, 'train'), X_train, y_train)
     save_dataset(args.out_label_name.format(args.language, 'val'), X_test, y_test)
+
+    category_count = {}
+
+    for meta_category, categories in category_dict.items():
+        for category in categories:
+            train_count = [label_from_fasttext(y) for y in y_train].count(category)
+            val_count = [label_from_fasttext(y) for y in y_test].count(category)
+
+            category_count[category] = {}
+            category_count[category]['train'] = train_count
+            category_count[category]['val'] = val_count
+
+    cx, cy_train, cy_test = [], [], []
+
+    for category, count in sorted(category_count.items(), key=lambda x: x[1]['train'] + x[1]['val'], reverse=True):
+        cx.append(category)
+        cy_train.append(count['train'])
+        cy_test.append(count['val'])
+
+    fig, ax = plt.subplots()
+    ax.barh(cx, cy_test, color='red')
+    ax.barh(cx, cy_train, color='blue', left=cy_test)
+    ax.set_title(args.log_name.split('/')[-1])
+    ax.set_xlim([0, 200])
+    plt.show()

@@ -9,7 +9,8 @@ from data_record import DataRecord
 
 regex_by_lang = {
     'en': r'[^a-z]',
-    'ru': r'[^а-я]'
+    'ru': r'[^а-яa-z]',
+    'uz': r'[^a-zoʻgʻʼ]'
 }
 
 def clean_text(text, language):
@@ -34,9 +35,9 @@ if __name__ == '__main__':
         category_dict = json.load(f)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--language', default='en')
-    parser.add_argument('--dataset_name', default='../../preprocessed/dc0415-input-en-2k.txt')
-    parser.add_argument('--log_name', default='../../outputs/dc0415-en-2k-ground-truth.txt')
+    parser.add_argument('--language', default='uz')
+    parser.add_argument('--dataset_name', default='../../preprocessed/dc-concat-uz-1k.txt')
+    parser.add_argument('--log_name', default='../../outputs/dc-concat-uz-1k-ground-truth.txt')
     parser.add_argument('--out_label_name', default='../../fastText/data/{}.{}')
     args = parser.parse_args()
 

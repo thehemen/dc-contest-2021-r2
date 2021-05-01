@@ -1,6 +1,21 @@
 {
-    "unicode_threshold": 0.1,
-    "fasttext_threshold": 0.1,
-    "en_compare_threshold": 0.7,
-    "en_compare_ratio": 15.0
+    "lang_model": "resources/lid.176.bin",
+    "category_list": "resources/categories.list",
+
+    "language":
+    {
+        "unicode_threshold": 0.1,
+        "fasttext_threshold": 0.1,
+        "en_compare_threshold": 0.7,
+        "en_compare_ratio": 15.0
+    },
+
+    "category":
+    {
+        "en": "resources/en.bin",
+        "ru": "resources/ru.bin",
+        "ar": "resources/ar.bin",
+        "fa": "resources/fa.bin",
+        "uz": "resources/uz.bin"
+    }
 }

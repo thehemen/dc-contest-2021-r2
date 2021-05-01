@@ -11,7 +11,8 @@ regex_by_lang = {
     'en': r'[^a-z]',
     'ru': r'[^а-яa-z]',
     'uz': r'[^a-zoʻgʻʼ]',
-    'ar': r'[^ا-ي]'
+    'ar': r'[^ا-ي]',
+    'fa': r'[^\u0600-\u06FF]'
 }
 
 def clean_text(text, language):

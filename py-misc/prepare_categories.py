@@ -230,8 +230,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--start_index', type=int, default=0)
-    parser.add_argument('--dataset_name', default='../../preprocessed/dc0415-input-ru-1k.txt')
-    parser.add_argument('--out_log_name', default='../../outputs/dc0415-ru-1k-ground-truth.txt')
+    parser.add_argument('--dataset_name', default='../../preprocessed/dc-concat-ar-1k-translated.txt')
+    parser.add_argument('--out_log_name', default='../../outputs/dc-concat-ar-1k-ground-truth.txt')
     args = parser.parse_args()
 
     pp = pprint.PrettyPrinter(indent=4)

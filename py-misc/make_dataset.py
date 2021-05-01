@@ -10,7 +10,8 @@ from data_record import DataRecord
 regex_by_lang = {
     'en': r'[^a-z]',
     'ru': r'[^а-яa-z]',
-    'uz': r'[^a-zoʻgʻʼ]'
+    'uz': r'[^a-zoʻgʻʼ]',
+    'ar': r'[^ا-ي]'
 }
 
 def clean_text(text, language):
@@ -35,9 +36,9 @@ if __name__ == '__main__':
         category_dict = json.load(f)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--language', default='uz')
-    parser.add_argument('--dataset_name', default='../../preprocessed/dc-concat-uz-1k.txt')
-    parser.add_argument('--log_name', default='../../outputs/dc-concat-uz-1k-ground-truth.txt')
+    parser.add_argument('--language', default='ar')
+    parser.add_argument('--dataset_name', default='../../preprocessed/dc-concat-ar-1k.txt')
+    parser.add_argument('--log_name', default='../../outputs/dc-concat-ar-1k-ground-truth.txt')
     parser.add_argument('--out_label_name', default='../../fastText/data/{}.{}')
     args = parser.parse_args()
 
@@ -86,6 +87,7 @@ if __name__ == '__main__':
             category_count[category]['train'] = train_count
             category_count[category]['val'] = val_count
 
+    max_count = max([max([v['train'], v['val']]) for k, v in category_count.items()])
     cx, cy_train, cy_test = [], [], []
 
     for category, count in sorted(category_count.items(), key=lambda x: x[1]['train'] + x[1]['val'], reverse=True):
@@ -97,5 +99,5 @@ if __name__ == '__main__':
     ax.barh(cx, cy_test, color='red')
     ax.barh(cx, cy_train, color='blue', left=cy_test)
     ax.set_title(args.log_name.split('/')[-1])
-    ax.set_xlim([0, 200])
+    ax.set_xlim([0, max_count])
     plt.show()

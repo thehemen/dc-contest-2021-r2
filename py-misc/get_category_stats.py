@@ -7,7 +7,7 @@ if __name__ == '__main__':
         category_dict = json.load(f)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--log_name', default='../../outputs/dc0415-ru-1k-ground-truth.txt')
+    parser.add_argument('--log_name', default='../../outputs/dc-concat-ar-1k-ground-truth.txt')
     args = parser.parse_args()
 
     category_by_idx = {}
@@ -27,8 +27,8 @@ if __name__ == '__main__':
     for idx, category in category_by_idx.items():
         category_count[category] += 1
 
-    x = []
-    y = []
+    max_count = max([v for k, v in category_count.items()])
+    x, y = [], []
 
     for category, count in sorted(category_count.items(), key=lambda x: x[1], reverse=True):
         print(f'{count} ({(count / len(category_by_idx)) * 100.0:.2f} %) {category}')
@@ -38,5 +38,5 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
     ax.barh(x, y)
     ax.set_title(args.log_name.split('/')[-1])
-    ax.set_xlim([0, 200])
+    ax.set_xlim([0, max_count])
     plt.show()

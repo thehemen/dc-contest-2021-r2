@@ -24,6 +24,7 @@ _deps
 # FastText Models
 *.pc
 *.bin
+*.ftz
 
 # Tester Executable
 tgcat-tester

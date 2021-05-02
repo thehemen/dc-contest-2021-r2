@@ -12,10 +12,10 @@
 
     "category":
     {
-        "en": "resources/en.bin",
-        "ru": "resources/ru.bin",
-        "ar": "resources/ar.bin",
-        "fa": "resources/fa.bin",
-        "uz": "resources/uz.bin"
+        "en": "resources/en.init.bin",
+        "ru": "resources/rusvectores.ftz",
+        "ar": "resources/wiki.ar.ftz",
+        "fa": "resources/wiki.fa.ftz",
+        "uz": "resources/wiki.uz.ftz"
     }
 }

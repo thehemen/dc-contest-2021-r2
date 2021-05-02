@@ -33,15 +33,50 @@ vector<string> get_category_list(const char* filename)
     return categories;
 }
 
-wstring remove_non_alpha(wstring s)
+bool is_char_good(wchar_t c, vector<pair<wchar_t, wchar_t>> ranges)
 {
-    std::replace_if(s.begin(), s.end(), [](auto const& c) -> bool
+    if(c == L' ')
+    {
+        return true;
+    }
+    else
+    {
+        bool flag = false;
+
+        for(const auto& [first, second]: ranges)
+        {
+            if(c >= first && c <= second)
+            {
+                flag = true;
+                break;
+            }
+        }
+
+        return flag;
+    }
+}
+
+bool BothAreSpaces(wchar_t lhs, wchar_t rhs) { return (lhs == rhs) && (lhs == L' '); }
+
+wstring remove_non_alpha(wstring s, vector<pair<wchar_t, wchar_t>> ranges)
+{
+    //Make alphabetic characterw to lower
+    transform(s.begin(), s.end(), s.begin(), ::towlower);
+
+    //Replace non-alphabetic characters with spaces
+    std::replace_if(s.begin(), s.end(), [ranges](auto const& c) -> bool
     { 
-        return !(std::iswalnum(c) && !std::iswdigit(c) || c == L' ');
+        return !is_char_good(c, ranges);
     }, L' ');
 
-    transform(s.begin(), s.end(), s.begin(), ::towlower);
-    s.erase(unique(s.begin(), s.end()), s.end());
+    //Remove duplicate spaces
+    s.erase(unique(s.begin(), s.end(), BothAreSpaces), s.end());
+
+    //Remove leading spaces
+    s.erase(s.begin(), find_if(s.begin(), s.end(), bind1st(not_equal_to<wchar_t>(), L' ')));
+
+    //Remove trailing spaces
+    s.erase(find_if(s.rbegin(), s.rend(), bind1st(not_equal_to<wchar_t>(), L' ')).base(), s.end());
     return s;
 }
 

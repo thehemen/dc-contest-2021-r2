@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <fstream>
+#include <vector>
+#include <map>
 
 #include "fasttext/fasttext.h"
 #include "nlohmann/json.hpp"
@@ -15,6 +18,8 @@
 using namespace std;
 using json = nlohmann::json;
 
+map<string, vector<pair<wchar_t, wchar_t>>> ranges;
+
 map<string, double> settings;
 vector<string> categories;
 
@@ -23,6 +28,24 @@ map<string, fasttext::FastText> cat_models;
 
 int tgcat_init()
 {
+    ranges["en"] = vector<pair<wchar_t, wchar_t>>();
+    ranges["en"].push_back(pair<wchar_t, wchar_t>(L'a', L'z'));
+
+    ranges["ru"] = vector<pair<wchar_t, wchar_t>>();
+    ranges["ru"].push_back(pair<wchar_t, wchar_t>(L'a', L'z'));
+    ranges["ru"].push_back(pair<wchar_t, wchar_t>(L'а', L'я'));
+
+    ranges["ar"] = vector<pair<wchar_t, wchar_t>>();
+    ranges["ar"].push_back(pair<wchar_t, wchar_t>(L'ا', L'ي'));
+
+    ranges["fa"] = vector<pair<wchar_t, wchar_t>>();
+    ranges["fa"].push_back(pair<wchar_t, wchar_t>(L'\u0600', L'\u06FF'));
+
+    ranges["uz"] = vector<pair<wchar_t, wchar_t>>();
+    ranges["uz"].push_back(pair<wchar_t, wchar_t>(L'a', L'z'));
+    ranges["uz"].push_back(pair<wchar_t, wchar_t>(L'ʼ', L'ʼ'));
+    ranges["uz"].push_back(pair<wchar_t, wchar_t>(L'ʻ', L'ʻ'));
+
     ifstream i("resources/settings.json");
     json j;
     i >> j;
@@ -64,7 +87,7 @@ int tgcat_detect_category(const struct TelegramChannelInfo *channel_info, double
 
     if(cat_models.count(language) != 0)
     {
-        wstring non_alpha_text = remove_non_alpha(text);
+        wstring non_alpha_text = remove_non_alpha(text, ranges[language]);
         probabilities = get_category_probabilities(cat_models[language], categories, non_alpha_text);
     }
 

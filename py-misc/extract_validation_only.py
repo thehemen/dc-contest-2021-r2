@@ -15,9 +15,6 @@ regex_by_lang = {
 def clean_text(text, language):
     return re.sub(' +', ' ', re.sub(regex_by_lang[language], ' ', text.lower())).lstrip().rstrip()
 
-def label_to_fasttext(label):
-    return '__label__' + label.replace(' ', '_')
-
 def label_from_fasttext(label):
     return label[9:].replace('_', ' ')
 
